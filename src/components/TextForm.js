@@ -1,81 +1,58 @@
-import React,{useState} from 'react'
-
+import React, { useState } from 'react';
 
 export default function TextForm(props) {
-  const handleUpClick=()=>{
-    console.log("upper case was clicked");
-    let newText=text.toUpperCase();
+  const [text, setText] = useState('Enter text here');
+
+  const handleUpClick = () => {
+    let newText = text.toUpperCase();
     setText(newText);
-    props.showAlert("converted to upper","success");
-  }
-  const handleloClick=()=>{
-    console.log("upper case was clicked");
-    let newText=text.toLowerCase();
+    props.showAlert("Converted to uppercase", "success");
+  };
+
+  const handleloClick = () => {
+    let newText = text.toLowerCase();
     setText(newText);
-    props.showAlert("converted to lower","success");
-  }
-  const handleclearClick=()=>{
-    console.log("upper case was clicked");
-    let newText="";
-    setText(newText);
-    props.showAlert("text cleared","success");
-  }
-  const handleOnChange=(event)=>{
-    console.log("on change was clicked");
+    props.showAlert("Converted to lowercase", "success");
+  };
+
+  const handleclearClick = () => {
+    setText("");
+    props.showAlert("Text cleared", "success");
+  };
+
+  const handleOnChange = (event) => {
     setText(event.target.value);
-   
-  }
+  };
 
+  const handleCopyClick = () => {
+    navigator.clipboard.writeText(text);
+    props.showAlert("Text copied", "success");
+  };
 
-  const handleCopyClick=()=>{
-    console.log("i am copy");
-    var text=document.getElementById("myBox");
-    text.select();
-    text.setSelectionRange(0,9999);
-    navigator.clipboard.writeText(text.value);
-    props.showAlert("text copied","success");
-  }
-  const handleExtraSpaces=()=>{
-    let newText=text.split(/[ ]+/);
-    setText(newText.join(" "))
-    props.showAlert("extra spaces removed","success");
-  }
-  const [text,setText]=useState('Enter text here');
+  const handleExtraSpaces = () => {
+    let newText = text.split(/[ ]+/).join(" ");
+    setText(newText);
+    props.showAlert("Extra spaces removed", "success");
+  };
+
   return (
     <>
-    <div className='container'  style={{backgroundColor:props.mode==='dark'?'white':'black'}} >
+      <div className='container' style={{ backgroundColor: props.mode === 'dark' ? 'white' : 'black', color: props.mode === 'dark' ? 'black' : 'white' }}>
         <h1>{props.heading}</h1>
-      <form>
-    
-  <div className="mb-3">
-    <label for="exampleInputEmail1" className="form-label">Email address</label>
-    <input type="email" className="form-control" id="exampleInputEmail1" value ={text} aria-describedby="emailHelp"/>
-    <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div>
-  </div>
-  <div className="mb-3">
-    <label for="exampleInputPassword1" className="form-label">Password</label>
-    <input type="password" className="form-control" id="exampleInputPassword1"/>
-    <textarea className='form-control' value={text} onChange={handleOnChange} id="myBox" rows="10" style={{backgroundColor:props.mode==='light'?'grey':'white'}} ></textarea>
-  </div>
-  <div className="mb-3 form-check">
-    <input type="checkbox" className="form-check-input" id="exampleCheck1"/>
-    <label className="form-check-label" for="exampleCheck1">Check me out</label>
-  </div>
-  
-  <button type="submit" className="btn btn-primary"onClick={handleUpClick}>Submit</button>
-  <button type="submit" className="btn btn-primary"onClick={handleloClick}>Submit</button>
-  <button type="submit" className="btn btn-primary"onClick={handleclearClick}>clear</button>
-  <button type="submit" className="btn btn-primary"onClick={handleCopyClick}>copy</button>
-  <button type="submit" className="btn btn-primary"onClick={handleExtraSpaces}>extra Spaces</button>
-</form>
-    </div>
-    <div className='container'  style={{backgroundColor:props.mode==='dark'?'white':'black'}}>
-      <h1>YOUR TEXT</h1>
-      <p>{text.split(" ").length} words and {text.length} CHARACTERS</p>
-      <p>{0.008*text.split(" ").length}Minutes read</p>
-      <h2>preview</h2>
-      <p>{text.length>0?text:"enter something"}</p>
-    </div>
+        <textarea className='form-control mb-3' value={text} onChange={handleOnChange} id="myBox" rows="10" style={{ backgroundColor: props.mode === 'light' ? 'grey' : 'white', color: props.mode === 'light' ? 'white' : 'black' }}></textarea>
+        <button className="btn btn-primary m-1" onClick={handleUpClick}>Uppercase</button>
+        <button className="btn btn-primary m-1" onClick={handleloClick}>Lowercase</button>
+        <button className="btn btn-primary m-1" onClick={handleclearClick}>Clear</button>
+        <button className="btn btn-primary m-1" onClick={handleCopyClick}>Copy</button>
+        <button className="btn btn-primary m-1" onClick={handleExtraSpaces}>Remove Extra Spaces</button>
+      </div>
+      <div className='container my-3' style={{ color: props.mode === 'dark' ? 'black' : 'white' }}>
+        <h2>Your text summary</h2>
+        <p>{text.trim().split(/\s+/).filter(word => word !== '').length} words and {text.length} characters</p>
+        <p>{0.008 * text.trim().split(/\s+/).length} Minutes read</p>
+        <h3>Preview</h3>
+        <p>{text.length > 0 ? text : "Enter something to preview it here"}</p>
+      </div>
     </>
-  )
+  );
 }
